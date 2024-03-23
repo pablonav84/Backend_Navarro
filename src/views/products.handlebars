@@ -2,11 +2,17 @@
 <hr>
 <ul>
     {{#each products}}
-<li>
-    {{title}} - code: <strong>{{code}}</strong>
-</li>
-    {{/each}}
+  <li>Categoría:{{category}}
+  	<ul>
+    <li>Marca:
+        {{title}} - code: <strong>{{code}}</strong>
+    </li>
+  	<li>Descripción: {{description}}</li>
+  	<li>Precio: {{price}}</li>
+  	</ul>
+  </li>
+  {{/each}}
 </ul>
 <br><br>
 
-<a href="/">Home Page</a>
+<input type="button" value="Home Page" onclick="document.location.href='/'" />
