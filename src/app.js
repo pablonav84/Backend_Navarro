@@ -7,6 +7,7 @@ import path from 'path';
 import { router as cartRouter } from "./routes/cartRouter.js"
 import { router as vistasRouter } from './routes/vistasRouter.js';
 import { router as productRouter } from "./routes/productRouter.js"
+
 const PORT = 8080;
 let io;
 
@@ -21,12 +22,9 @@ app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
-
 app.use("/", vistasRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/productos", productRouter);
-
-
 
 app.get('*', (req, res) => {
   res.setHeader('Content-Type', 'text/plain');
@@ -48,7 +46,6 @@ const connect = async () => {
       console.log("Fallo conexión. Detalle:", error.message);
     }
   };
-  
   connect();
 
   let mensajes=[]
@@ -65,19 +62,16 @@ let usuarios=[]
   socket.emit("historial", mensajes)
       socket.broadcast.emit("nuevoUsuario", nombre)
     });
-  
   socket.on("mensaje", (nombre, mensaje)=>{
     mensajes.push({nombre, mensaje})
     io.emit("nuevoMensaje", nombre, mensaje)
   })
-  
   socket.on("disconnect", ()=>{
     let usuario=usuarios.find(u=>u.id===socket.id)
     if(usuario){
         socket.broadcast.emit("saleUsuario", usuario.nombre)
     }
   })
-
   socket.on("connection", socket=>{
     console.log(`Se conecto un cliente con id ${socket.id}`)
   });
