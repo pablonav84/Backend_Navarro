@@ -1,10 +1,12 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
 import __dirname from './utils.js';
 import path from 'path';
+import { router as cartRouter } from "./routes/cartRouter.js"
 import { router as vistasRouter } from './routes/vistasRouter.js';
-
+import { router as productRouter } from "./routes/productRouter.js"
 const PORT = 8080;
 let io;
 
@@ -20,7 +22,8 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use("/", vistasRouter)
-
+app.use("/api/cart", cartRouter)
+app.use("/api/productos", productRouter);
 
 
 
@@ -39,3 +42,17 @@ io.on('connection', (socket) => {
   console.log(`Cliente Conectado con el id ${socket.id}`);
   socket.emit('saludo', { emisor: 'server', mensaje: 'Bienvenido al server' });
 });
+
+const connect = async () => {
+    try {
+      await mongoose.connect(
+        "mongodb+srv://pablonav84:pablo1810@cluster0.1ym0zxu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        { dbName: "ecommerce" }
+      );
+      console.log("DB Online");
+    } catch (error) {
+      console.log("Fallo conexión. Detalle:", error.message);
+    }
+  };
+  
+  connect();
