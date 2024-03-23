@@ -21,6 +21,7 @@ app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
+
 app.use("/", vistasRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/productos", productRouter);
@@ -36,13 +37,6 @@ const server = app.listen(PORT, () => {
   console.log(`Server escuchando en puerto ${PORT}`);
 });
 
-io = new Server(server);
-
-io.on('connection', (socket) => {
-  console.log(`Cliente Conectado con el id ${socket.id}`);
-  socket.emit('saludo', { emisor: 'server', mensaje: 'Bienvenido al server' });
-});
-
 const connect = async () => {
     try {
       await mongoose.connect(
@@ -56,3 +50,35 @@ const connect = async () => {
   };
   
   connect();
+
+  let mensajes=[]
+let usuarios=[]
+
+  io = new Server(server);
+
+  io.on('connection', (socket) => {
+    console.log(`Cliente Conectado con el id ${socket.id}`);
+    socket.emit('saludo', { emisor: 'server', mensaje: 'Bienvenido al server' });
+  
+    socket.on('confirmacion', nombre => {
+  usuarios.push({id:socket.id, nombre})
+  socket.emit("historial", mensajes)
+      socket.broadcast.emit("nuevoUsuario", nombre)
+    });
+  
+  socket.on("mensaje", (nombre, mensaje)=>{
+    mensajes.push({nombre, mensaje})
+    io.emit("nuevoMensaje", nombre, mensaje)
+  })
+  
+  socket.on("disconnect", ()=>{
+    let usuario=usuarios.find(u=>u.id===socket.id)
+    if(usuario){
+        socket.broadcast.emit("saleUsuario", usuario.nombre)
+    }
+  })
+
+  socket.on("connection", socket=>{
+    console.log(`Se conecto un cliente con id ${socket.id}`)
+  });
+  })
