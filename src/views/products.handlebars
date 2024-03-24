@@ -1,6 +1,6 @@
 <h2>Productos</h2>
 <hr>
-<ul>
+<ul id="productos">
     {{#each products}}
   <li>Categoría:{{category}}
   	<ul>
@@ -16,3 +16,6 @@
 <br><br>
 
 <input type="button" value="Home Page" onclick="document.location.href='/'" />
+
+<script src="socket.io/socket.io.js"></script>
+<script src="js/products.js"></script>

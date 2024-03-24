@@ -57,6 +57,10 @@ let usuarios=[]
     console.log(`Cliente Conectado con el id ${socket.id}`);
     socket.emit('saludo', { emisor: 'server', mensaje: 'Bienvenido al server' });
   
+    socket.on("compra", (idCart, id, description)=>{
+      cartManager.comprar(idCart, id, description)
+  })
+
     socket.on('confirmacion', nombre => {
   usuarios.push({id:socket.id, nombre})
   socket.emit("historial", mensajes)

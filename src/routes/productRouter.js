@@ -2,7 +2,6 @@ import { Router } from "express";
 import { creaHash, rutaProducts } from "../utils.js";
 import { ProductsManager } from "../dao/ProductsManagerMongo.js";
 import mongoose from "mongoose";
-
 export const router = Router();
 
 let productsManager = new ProductsManager(rutaProducts);
@@ -93,13 +92,34 @@ router.post("/", async (req, res) => {
       category,
       password,
     });
+   /*req.io.emit("nuevoProducto", nuevoProducto);*/
     res.setHeader("Content-Type", "application/json");
-    return res.status(201).json({ payload: nuevoProducto });
+    return res.status(201).json({ nuevoProducto: nuevoProducto });
   } catch (error) {
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({
       error: `Error inesperado en el servidor`,
       detalle: error.message,
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  let { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.setHeader("Content-Type", "application/json");
+    return res.status(400).json({ error: `id inválido` });
+  }
+  
+  const deletedProduct = await productsManager.deleteProduct(id);
+  if (deletedProduct) {
+    /*req.io.emit("productoEliminado", remaining)*/
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ mensaje: "El producto ha sido eliminado exitosamente" });
+  } else {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(404).json({
+      error: "Producto no encontrado"
     });
   }
 });
