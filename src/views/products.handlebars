@@ -1,4 +1,15 @@
 <h2>Productos</h2>
+
+<script>
+let nombreGuardado = sessionStorage.getItem('nombre');
+let mayusculas = nombreGuardado.toUpperCase();
+if (mayusculas) {
+    document.write("<h2>Bienvenido <span style='color: red;'>" + mayusculas + "</span> Estos Son Los Productos Disponibles</h2>");
+  } else {
+    document.write("<h2>Bienvenido Estos Son Los Productos Disponibles</h2>");
+  }
+</script>
+
 <hr>
 <ul id="productos">
     {{#each products}}

@@ -1,6 +1,22 @@
 <h2>Home Page</h2>
 <hr>
 
+<script>
+var nombreGuardado = sessionStorage.getItem('nombre');
+if (nombreGuardado) {
+    let mayusculas = nombreGuardado.toUpperCase();
+  document.write("<h2>¡Hola <span style='color: red;'>" + mayusculas + "</span> Bienvenido!</h2>");
+} else {
+  var nombre = prompt("Ingresa tu nombre");
+  sessionStorage.setItem('nombre', nombre);
+  if (nombre) {
+    document.write("<h2>¡Hola " + nombre + " Bienvenido!</h2>");
+  } else {
+    document.write("<h2>¡Bienvenido!</h2>");
+  }
+}
+</script>
+
 <input type="button" value="Productos" onclick="document.location.href='/products'" />
 <br>
 <input type="button" value="chat" onclick="document.location.href='/chat'" />
