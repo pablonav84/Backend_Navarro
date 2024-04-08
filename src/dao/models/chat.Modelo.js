@@ -5,6 +5,7 @@ const messageSchema = new mongoose.Schema(
     {
   nombre:String,
   mensaje:String,
+  fecha: { type: Date, default: Date.now },
 },
 {
   timestamps:true

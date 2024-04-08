@@ -7,7 +7,7 @@ import path from 'path';
 import { router as cartRouter } from "./routes/cartRouter.js"
 import { router as vistasRouter } from './routes/vistasRouter.js';
 import { router as productRouter } from "./routes/productRouter.js"
-
+import { ChatManager } from './dao/chatManagerMongo.js';
 const PORT = 8080;
 let io;
 
@@ -53,6 +53,7 @@ let usuarios=[]
 
   io = new Server(server);
 
+  let cManager=new ChatManager()
   io.on('connection', (socket) => {
     console.log(`Cliente Conectado con el id ${socket.id}`);
     socket.emit('saludo', { emisor: 'server', mensaje: 'Bienvenido al server' });
@@ -66,10 +67,17 @@ let usuarios=[]
   socket.emit("historial", mensajes)
       socket.broadcast.emit("nuevoUsuario", nombre)
     });
-  socket.on("mensaje", (nombre, mensaje)=>{
-    mensajes.push({nombre, mensaje})
-    io.emit("nuevoMensaje", nombre, mensaje)
-  })
+    socket.on("mensaje", (nombre, mensaje) => {
+      cManager.guardarMensaje(nombre, mensaje)
+      .then(mensajeGuardado => {
+        console.log('Mensaje guardado exitosamente:', mensajeGuardado);
+      })
+      .catch(error => {
+        console.error('Error al guardar el mensaje:', error);
+      });
+      io.emit("nuevoMensaje", nombre, mensaje)
+    });
+    
   socket.on("disconnect", ()=>{
     let usuario=usuarios.find(u=>u.id===socket.id)
     if(usuario){

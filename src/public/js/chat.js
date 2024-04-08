@@ -1,4 +1,3 @@
-import { chatModelo } from "../../dao/models/chat.Modelo.js"
 
   Swal.fire({
     title: "Bienvenido al chat",
@@ -38,15 +37,6 @@ import { chatModelo } from "../../dao/models/chat.Modelo.js"
     })
 
     socket.on("nuevoMensaje", (nombre, mensaje) => {
-
-        const nuevoMensaje = new chatModelo({ nombre, mensaje });
-        nuevoMensaje.save()
-          .then(() => {
-            console.log('Mensaje guardado exitosamente en la base de datos');
-          })
-          .catch((error) => {
-            console.error('Error al guardar el mensaje en la base de datos:', error);
-          });
 
       divMsjs.innerHTML += `<div class="mensaje"><strong>${nombre}</strong> dice: <i>${mensaje}</i></div><br>`
     })
